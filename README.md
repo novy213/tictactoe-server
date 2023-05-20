@@ -70,13 +70,13 @@ POST /tictactoe/register
   "message": null
 }
 ```
-## 2.1 Get user we are chatting with
+## 2.1 Get game info
 ```
-GET /chat/{chat_user}
+GET /tictactoe/{game_id}
 ```
 ### Params:
 ```
-chat_user - unique id of user
+game_id - unique id of game
 ```
 ### Body:
 ```
@@ -87,21 +87,23 @@ chat_user - unique id of user
 {
   "error": false,
   "message": null,
-  "user":
+  "game":
     {
       "id": 1,
-      "name": "jan",
-      "last_name": "kowalski"
+      "name": "gra1",
+      "host": 2,
+      "password": false,
+      "invited_plater": 3
     }
 }
 ```
-## 2.2 Get list of all users
+## 2.2 Get info about player
 ```
-GET /chat
+GET /tictactoe/{user_id}
 ```
 ### Params:
 ```
-(null)
+user_id - unique id of user
 ```
 ### Body:
 ```
@@ -112,27 +114,22 @@ GET /chat
 {
   "error": false,
   "message": null,
-  "users":[
+  "user":[
     {
       "id": 1,
       "name": "jan",
       "last_name": "kowalski"
-    },
-    {
-      "id": 2,
-      "name": "adam",
-      "last_name": "nowak"
     }
   ]
 }
 ```
-## 2.3 Get users list you chatted with
+## 2.3 Start game
 ```
-GET /chat/user
+PUT /tictactoe/{game_id}
 ```
 ### Params:
 ```
-(null)
+game_id - unique id of game
 ```
 ### Body:
 ```
@@ -146,13 +143,10 @@ GET /chat/user
   "users":[
     {
       "id": 1,
-      "name": "jan",
-      "last_name": "kowalski"
-    },
-    {
-      "id": 2,
-      "name": "adam",
-      "last_name": "nowak"
+      "name": "gra1",
+      "host": 2,
+      "enemy": 3,
+      "start": 2     
     }
   ]
 }
