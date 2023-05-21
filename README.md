@@ -1,5 +1,24 @@
 # Database specyfication
-
+The database contains 3 tables properly connected with each other.
+### Users table:
+- id - unique user ID
+- login - user login
+- password - user's encrypted password
+- name - user's name
+- last name - user's last name
+### Games table:
+- id - unique id of the game
+- host_player - id of player that created game
+- name - game name
+- enemy_id - unique id of second player (null before game started)
+- invited_player - id of invited player (colud be null)
+- is_password - which defines whether the game is password protected (true/false)
+- password - password to game (colud be null)
+### Move table:
+- id - unique move id
+- move - field that describes the player's move (e.g. A1)
+- player_id - field that tells which player made the move
+- game_id - field that tells you in which game the move was made
 # Api doc
 ## Api url
 ```
