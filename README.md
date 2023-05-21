@@ -6,7 +6,7 @@ The database contains 3 tables properly connected with each other.
 - password - user's encrypted password
 - name - user's name
 - last name - user's last name
-### Games table:
+### Game table:
 - id - unique id of the game
 - host_player - id of player that created game
 - name - game name
