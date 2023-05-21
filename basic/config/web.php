@@ -14,7 +14,7 @@ $config = [
     'components' => [
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
-            'cookieValidationKey' => '',
+            'cookieValidationKey' => 'tictactoe',
         ],
         'cache' => [
             'class' => 'yii\caching\FileCache',
@@ -42,14 +42,47 @@ $config = [
             ],
         ],
         'db' => $db,
-        /*
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
+                [
+                    'pattern' => '/',
+                    'route' => '/auth/login',
+                    'verb' => 'POST',
+                ],
+                [
+                    'pattern' => '/',
+                    'route' => '/auth/logout',
+                    'verb' => 'DELETE',
+                ],
+                [
+                    'pattern' => '/register',
+                    'route' => '/site/register',
+                    'verb' => 'POST',
+                ],
+                [
+                    'pattern' => '/game',
+                    'route' => '/site/creategame',
+                    'verb' => 'POST',
+                ],
+                [
+                    'pattern' => '/game',
+                    'route' => '/site/getgames',
+                    'verb' => 'GET',
+                ],
+                [
+                    'pattern' => '/game/<game_id:\d+>',
+                    'route' => '/site/joingame',
+                    'verb' => 'POST',
+                ],
+                [
+                    'pattern' => '/game/user',
+                    'route' => '/site/getgameinfo',
+                    'verb' => 'GET',
+                ],
             ],
         ],
-        */
     ],
     'params' => $params,
 ];
@@ -67,7 +100,7 @@ if (YII_ENV_DEV) {
     $config['modules']['gii'] = [
         'class' => 'yii\gii\Module',
         // uncomment the following to add your IP if you are not connecting from localhost.
-        //'allowedIPs' => ['127.0.0.1', '::1'],
+        'allowedIPs' => ['127.0.0.1', '::1', '172.29.0.1'],
     ];
 }
 

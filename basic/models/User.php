@@ -2,38 +2,105 @@
 
 namespace app\models;
 
-class User extends \yii\base\BaseObject implements \yii\web\IdentityInterface
+class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
 {
-    public $id;
-    public $username;
-    public $password;
-    public $authKey;
-    public $accessToken;
+    /**
+     * This is the model class for table "user".
+     *
+     * @property int $id
+     * @property string $login
+     * @property string $password
+     * @property string|null $name
+     * @property string|null $last_name
+     * @property string|null $access_token
+     *
+     * @property Game[] $games
+     * @property Game[] $games0
+     * @property Game[] $games1
+     * @property Move[] $moves
+     */
 
-    private static $users = [
-        '100' => [
-            'id' => '100',
-            'username' => 'admin',
-            'password' => 'admin',
-            'authKey' => 'test100key',
-            'accessToken' => '100-token',
-        ],
-        '101' => [
-            'id' => '101',
-            'username' => 'demo',
-            'password' => 'demo',
-            'authKey' => 'test101key',
-            'accessToken' => '101-token',
-        ],
-    ];
+    public static function tableName()
+    {
+        return 'user';
+    }
 
+    public function rules()
+    {
+        return [
+            [['login', 'password'], 'required'],
+            [['login', 'password', 'name', 'last_name', 'access_token'], 'string', 'max' => 255],
+        ];
+    }
+    public function attributeLabels()
+    {
+        return [
+            'id' => 'ID',
+            'login' => 'Login',
+            'password' => 'Password',
+            'name' => 'Name',
+            'last_name' => 'Last Name',
+            'access_token' => 'Access Token',
+        ];
+    }
+    /**
+     * Gets query for [[Games]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getGames()
+    {
+        return $this->hasMany(Game::class, ['enemy_id' => 'id']);
+    }
+
+    /**
+     * Gets query for [[Games0]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getGames0()
+    {
+        return $this->hasMany(Game::class, ['host_player' => 'id']);
+    }
+
+    /**
+     * Gets query for [[Games1]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getGames1()
+    {
+        return $this->hasMany(Game::class, ['invited_player' => 'id']);
+    }
+
+    /**
+     * Gets query for [[Moves]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMoves()
+    {
+        return $this->hasMany(Move::class, ['player_id' => 'id']);
+    }
+    public function createApiToken()
+    {
+        $this->access_token = \Yii::$app->security->generateRandomString();
+        $this->updateAttributes(['access_token']);
+        return $this->access_token;
+    }
+
+    public function clearApiToken()
+    {
+        $this->access_token = null;
+        $this->updateAttributes(['access_token']);
+    }
 
     /**
      * {@inheritdoc}
      */
     public static function findIdentity($id)
     {
-        return isset(self::$users[$id]) ? new static(self::$users[$id]) : null;
+        return self::findOne(['id' => $id]);
     }
 
     /**
@@ -41,13 +108,8 @@ class User extends \yii\base\BaseObject implements \yii\web\IdentityInterface
      */
     public static function findIdentityByAccessToken($token, $type = null)
     {
-        foreach (self::$users as $user) {
-            if ($user['accessToken'] === $token) {
-                return new static($user);
-            }
-        }
-
-        return null;
+        $user = self::findOne(['access_token' => $token]);
+        return $user;
     }
 
     /**
@@ -58,15 +120,8 @@ class User extends \yii\base\BaseObject implements \yii\web\IdentityInterface
      */
     public static function findByUsername($username)
     {
-        foreach (self::$users as $user) {
-            if (strcasecmp($user['username'], $username) === 0) {
-                return new static($user);
-            }
-        }
-
-        return null;
+        return self::findOne(['login' => $username]);
     }
-
     /**
      * {@inheritdoc}
      */
@@ -80,7 +135,7 @@ class User extends \yii\base\BaseObject implements \yii\web\IdentityInterface
      */
     public function getAuthKey()
     {
-        return $this->authKey;
+
     }
 
     /**
@@ -88,7 +143,7 @@ class User extends \yii\base\BaseObject implements \yii\web\IdentityInterface
      */
     public function validateAuthKey($authKey)
     {
-        return $this->authKey === $authKey;
+
     }
 
     /**
@@ -99,6 +154,15 @@ class User extends \yii\base\BaseObject implements \yii\web\IdentityInterface
      */
     public function validatePassword($password)
     {
-        return $this->password === $password;
+        return password_verify($password, $this->password);
+    }
+
+    public function beforeSave($insert)
+    {
+        if (parent::beforeSave($insert)) {
+            $this->password = password_hash($this->password, PASSWORD_BCRYPT);
+            return true;
+        }
+        return false;
     }
 }
