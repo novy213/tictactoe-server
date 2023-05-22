@@ -81,6 +81,11 @@ $config = [
                     'route' => '/site/getgameinfo',
                     'verb' => 'GET',
                 ],
+                [
+                    'pattern' => '/game/abort',
+                    'route' => '/site/abortgame',
+                    'verb' => 'DELETE',
+                ],
             ],
         ],
     ],

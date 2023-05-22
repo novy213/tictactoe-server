@@ -14,6 +14,28 @@ use app\models\ContactForm;
 
 class SiteController extends Controller
 {
+    /*public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::class,
+                'only' => ['logout'],
+                'rules' => [
+                    [
+                        'actions' => ['logout'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
+            'verbs' => [
+                'class' => VerbFilter::class,
+                'actions' => [
+                    'logout' => ['post'],
+                ],
+            ],
+        ];
+    }*/
 
     /**
      * {@inheritdoc}
@@ -26,6 +48,10 @@ class SiteController extends Controller
             ]
         ];
     }
+    /*public function actionIndex()
+    {
+        return $this->render('index');
+    }*/
 
     public function actionRegister(){
         $post = $this->getJsonInput();
@@ -56,10 +82,11 @@ class SiteController extends Controller
         }
     }
     public function actionCreategame(){
+        $user = Yii::$app->user->identity;
         $post = $this->getJsonInput();
         $game = new Game();
-        if(isset($post->host_id)){
-            $game->host_id = $post->host_id;
+        if(isset($user)){
+            $game->host_id = $user->id;
         }
         if(isset($post->name)){
             $game->name = $post->name;
@@ -94,10 +121,25 @@ class SiteController extends Controller
         }
     }
     public function actionGetgames(){
+        $game = Game::find()->andWhere(['enemy_id'=>null])->all();
+        $games=array();
+        for($i=0;$i<count($game);$i++){
+            $games[] =[
+                'id' => $game[$i]->id,
+                'host_id' => $game[$i]->host_id,
+                'name' => $game[$i]->name,
+                'enemy_id' => $game[$i]->enemy_id,
+                'invited_player' => $game[$i]->invited_player,
+                'is_password' => $game[$i]->is_password,
+                'password' => $game[$i]->password,
+                'user_name' => $game[$i]->host->name,
+                'user_last_name' => $game[$i]->host->last_name
+            ];
+        }
         return [
             'error' => FALSE,
             'message' => NULL,
-            'games' => Game::find()->all()
+            'games' => $games
         ];
     }
     public function actionJoingame($game_id){
@@ -105,7 +147,7 @@ class SiteController extends Controller
         $user = yii::$app->user->identity;
         $game = Game::find()->andWhere(['id'=>$game_id])->one();
         $userGame = Game::find()->andWhere(['host_id'=>$user->id])->orWhere(['enemy_id'=>$user->id])->one();
-        if(!$userGame) {
+        if(!$userGame && $user->id != $game_id) {
             if (!$game) {
                 return [
                     'error' => true,
@@ -120,6 +162,9 @@ class SiteController extends Controller
                         ];
                     } else {
                         $game->enemy_id = $user->id;
+                        $start = rand(0,1);
+                        if($start==1) $game->turn = $game->host_id;
+                        else if($start==0) $game->turn = $game->enemy_id;
                         $game->update();
                         return [
                             'error' => FALSE,
@@ -135,6 +180,9 @@ class SiteController extends Controller
                             ];
                         } else {
                             $game->enemy_id = $user->id;
+                            $start = rand(0,1);
+                            if($start==1) $game->turn = $game->host_id;
+                            else if($start==0) $game->turn = $game->enemy_id;
                             $game->update();
                             return [
                                 'error' => FALSE,

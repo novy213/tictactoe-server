@@ -27,10 +27,19 @@ class m230521_103117_create_table extends Migration
             'name' => $this->string()->notNull(),
             'enemy_id' =>$this->integer(),
             'invited_player' =>$this->integer(),
-            'is_password' =>$this->boolean(),
+            'is_password' =>$this->boolean()->defaultValue(false),
             'password' =>$this->string(),
+            'turn' =>$this->integer(),
         ]);
         $this -> alterColumn('game','id', $this->integer().' AUTO_INCREMENT');
+        $this->addForeignKey(
+            'fk-turn',
+            'game',
+            'turn',
+            'user',
+            'id',
+            'CASCADE'
+        );
         $this->addForeignKey(
             'fk-host_id',
             'game',
@@ -86,6 +95,7 @@ class m230521_103117_create_table extends Migration
     public function safeDown()
     {
         $this->dropForeignKey('fk-invited_player', 'game');
+        $this->dropForeignKey('fk-turn', 'game');
         $this->dropForeignKey('fk-enemy_id', 'game');
         $this->dropForeignKey('fk-host_id', 'game');
         $this->dropForeignKey('fk-player_id', 'move');
