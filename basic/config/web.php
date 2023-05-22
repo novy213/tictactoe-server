@@ -86,6 +86,21 @@ $config = [
                     'route' => '/site/abortgame',
                     'verb' => 'DELETE',
                 ],
+                [
+                    'pattern' => '/users',
+                    'route' => '/site/getusers',
+                    'verb' => 'GET',
+                ],
+                [
+                    'pattern' => '/game/move',
+                    'route' => '/site/sendmove',
+                    'verb' => 'POST',
+                ],
+                [
+                    'pattern' => '/game/move',
+                    'route' => '/site/recivemoves',
+                    'verb' => 'GET',
+                ],
             ],
         ],
     ],

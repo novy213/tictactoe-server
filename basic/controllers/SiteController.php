@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\models\Game;
+use app\models\Move;
 use app\models\User;
 use Yii;
 use yii\filters\AccessControl;
@@ -121,7 +122,7 @@ class SiteController extends Controller
         }
     }
     public function actionGetgames(){
-        $game = Game::find()->andWhere(['enemy_id'=>null])->all();
+        $game = Game::find()->andWhere(['enemy_id'=>null, 'invited_player'=>null])->all();
         $games=array();
         for($i=0;$i<count($game);$i++){
             $games[] =[
@@ -236,6 +237,79 @@ class SiteController extends Controller
             return [
                 'error' => FALSE,
                 'message' => NULL,
+            ];
+        }
+    }
+    public function actionGetusers(){
+        $user = Yii::$app->user->identity;
+        $users = User::find()->andWhere(['<>', 'id', $user->id])->all();
+        $return = array();
+        for($i=0;$i<count($users);$i++){
+            $return[] = [
+              'id'=>$users[$i]->id,
+              'name'=>$users[$i]->name,
+              'last_name'=>$users[$i]->last_name,
+            ];
+        }
+        if(!$users){
+            return[
+                'error' => true,
+                'message' => 'there is no players'
+            ];
+        }
+        else{
+            return [
+                'error' => FALSE,
+                'message' => NULL,
+                'users' => $return
+            ];
+        }
+    }
+    public function actionSendmove(){
+        $user = Yii::$app->user->identity;
+        $game = Game::find()->andWhere(['host_id'=>$user->id])->orWhere(['enemy_id'=>$user->id])->one();
+        $post = $this->getJsonInput();
+        $move = new Move();
+        if(!$post || !$game){
+            return[
+                'error' => true,
+                'message' => 'there is something wrong with your request'
+            ];
+        }
+        else{
+            $move->move = $post->move;
+            $move->player_id = $user->id;
+            $move->game_id = $game->id;
+            if($move->validate()){
+                $move->save();
+                return [
+                    'error' => FALSE,
+                    'message' => NULL,
+                ];
+            }
+            else{
+                return [
+                    'error' => true,
+                    'message' => $move->getErrorSummary(false),
+                ];
+            }
+        }
+    }
+    public function actionRecivemoves(){
+        $user = Yii::$app->user->identity;
+        $game = $user->games;
+        $moves = $game[0]->moves;
+        if($moves){
+            return [
+                'error' => FALSE,
+                'message' => NULL,
+                'moves'=>$moves
+            ];
+        }
+        else {
+            return [
+                'error' => true,
+                'message' => 'there is no moves in game'
             ];
         }
     }
