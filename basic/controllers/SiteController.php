@@ -297,8 +297,18 @@ class SiteController extends Controller
     }
     public function actionRecivemoves(){
         $user = Yii::$app->user->identity;
-        $game = $user->games;
-        $moves = $game[0]->moves;
+        $game = Game::find()->andWhere(['host_id'=>$user->id])->orWhere(['enemy_id'=>$user->id])->one();
+        if($game!=null) $win = $game->Win();
+        if(!$win['error']){
+            return $win;
+        }
+        $moves = $game->moves;
+        if(!$game){
+            return [
+                'error' => true,
+                'message' => 'this game does not exist'
+            ];
+        }
         if($moves){
             return [
                 'error' => FALSE,
@@ -308,7 +318,7 @@ class SiteController extends Controller
         }
         else {
             return [
-                'error' => true,
+                'error' => false,
                 'message' => 'there is no moves in game'
             ];
         }

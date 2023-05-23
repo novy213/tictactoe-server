@@ -114,4 +114,144 @@ class Game extends \yii\db\ActiveRecord
     {
         return $this->hasOne(User::class, ['id' => 'turn']);
     }
+    public function Win(){
+        $moves = array();
+        $move = Move::find()->andWhere(['game_id'=>$this->id])->all();
+        $char = "X";
+        for($i=0;$i<count($move);$i++){
+            switch ($move[$i]->move){
+                case "a1":
+                    $moves[0]=$char;
+                    break;
+                case "a2":
+                    $moves[1]=$char;
+                    break;
+                case "a3":
+                    $moves[2]=$char;
+                    break;
+                case "b1":
+                    $moves[3]=$char;
+                    break;
+                case "b2":
+                    $moves[4]=$char;
+                    break;
+                case "b3":
+                    $moves[5]=$char;
+                    break;
+                case "c1":
+                    $moves[6]=$char;
+                    break;
+                case "c2":
+                    $moves[7]=$char;
+                    break;
+                case "c3":
+                    $moves[8]=$char;
+                    break;
+            }
+            if ($char == "X") $char = "O";
+            else if ($char == "O") $char = "X";
+        }
+        if($moves[0]=="X" && $moves[1]=="X" && $moves[2]=="X"){
+            return[
+                'error'=>false,
+                'message'=>"Winner is X",
+            ];
+        }
+        if($moves[3]=="X" && $moves[4]=="X" && $moves[5]=="X"){
+            return[
+                'error'=>false,
+                'message'=>"Winner is X",
+            ];
+        }
+        if($moves[6]=="X" && $moves[7]=="X" && $moves[8]=="X"){
+            return[
+                'error'=>false,
+                'message'=>"Winner is X",
+            ];
+        }
+        if($moves[0]=="X" && $moves[3]=="X" && $moves[6]=="X"){
+            return[
+                'error'=>false,
+                'message'=>"Winner is X",
+            ];
+        }
+        if($moves[1]=="X" && $moves[4]=="X" && $moves[7]=="X"){
+            return[
+                'error'=>false,
+                'message'=>"Winner is X",
+            ];
+        }
+        if($moves[2]=="X" && $moves[5]=="X" && $moves[8]=="X"){
+            return[
+                'error'=>false,
+                'message'=>"Winner is X",
+            ];
+        }
+        if($moves[0]=="X" && $moves[4]=="X" && $moves[8]=="X"){
+            return[
+                'error'=>false,
+                'message'=>"Winner is X",
+            ];
+        }
+        if($moves[2]=="X" && $moves[4]=="X" && $moves[6]=="X"){
+            return[
+                'error'=>false,
+                'message'=>"Winner is X",
+            ];
+        }
+        if($moves[0]=="O" && $moves[1]=="O" && $moves[2]=="O"){
+            return[
+                'error'=>false,
+                'message'=>"Winner is O",
+            ];
+        }
+        if($moves[3]=="O" && $moves[4]=="O" && $moves[5]=="O"){
+            return[
+                'error'=>false,
+                'message'=>"Winner is O",
+            ];
+        }
+        if($moves[6]=="O" && $moves[7]=="O" && $moves[8]=="O"){
+            return[
+                'error'=>false,
+                'message'=>"Winner is O",
+            ];
+        }
+        if($moves[0]=="O" && $moves[3]=="O" && $moves[6]=="O"){
+            return[
+                'error'=>false,
+                'message'=>"Winner is O",
+            ];
+        }
+        if($moves[1]=="O" && $moves[4]=="O" && $moves[7]=="O"){
+            return[
+                'error'=>false,
+                'message'=>"Winner is O",
+            ];
+        }
+        if($moves[2]=="O" && $moves[5]=="O" && $moves[8]=="O"){
+            return[
+                'error'=>false,
+                'message'=>"Winner is O",
+            ];
+        }
+        if($moves[0]=="O" && $moves[4]=="O" && $moves[8]=="O"){
+            return[
+                'error'=>false,
+                'message'=>"Winner is O",
+            ];
+        }
+        if($moves[2]=="O" && $moves[4]=="O" && $moves[6]=="O"){
+            return[
+                'error'=>false,
+                'message'=>"Winner is O",
+            ];
+        }
+        else {
+            return[
+                'error'=>true,
+                'message'=>"No winner",
+            ];
+        }
+    }
 }
