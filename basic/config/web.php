@@ -101,6 +101,16 @@ $config = [
                     'route' => '/site/recivemoves',
                     'verb' => 'GET',
                 ],
+                [
+                    'pattern' => '/game/invites',
+                    'route' => '/site/getinvites',
+                    'verb' => 'GET',
+                ],
+                [
+                    'pattern' => '/game/<game_id:\d+>',
+                    'route' => '/site/rejectgame',
+                    'verb' => 'DELETE',
+                ],
             ],
         ],
     ],

@@ -247,6 +247,14 @@ class Game extends \yii\db\ActiveRecord
                 'message'=>"Winner is O",
             ];
         }
+        if($moves[0]!=null && $moves[1]!=null&& $moves[2]!=null &&
+            $moves[3]!=null && $moves[4]!=null&& $moves[5]!=null &&
+            $moves[6]!=null && $moves[7]!=null&& $moves[8]!=null){
+            return[
+                'error'=>false,
+                'message'=>"Draw",
+            ];
+        }
         else {
             return[
                 'error'=>true,

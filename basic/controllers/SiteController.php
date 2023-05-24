@@ -323,4 +323,39 @@ class SiteController extends Controller
             ];
         }
     }
+    public function actionGetinvites(){
+        $user = Yii::$app->user->identity;
+        $games = Game::find()->andWhere(['invited_player'=>$user->id])->all();
+        $invites = array();
+        for($i=0;$i<count($games);$i++){
+            $invites[]=[
+              'game_id' => $games[$i]->id,
+              'name' => $games[$i]->name,
+              'user_name' => User::find()->andWhere(['id'=>$games[$i]->host_id])->one()->name,
+              'user_last_name' => User::find()->andWhere(['id'=>$games[$i]->host_id])->one()->last_name,
+            ];
+        }
+        return [
+            'error' => false,
+            'message' => null,
+            'invites'=>$invites
+        ];
+    }
+    public function actionRejectgame($game_id){
+        $user = Yii::$app->user->identity;
+        $game = Game::find()->andWhere(['invited_player'=>$user->id, 'id'=>$game_id])->one();
+        if($game){
+            $game->delete();
+            return [
+                'error' => false,
+                'message' => null
+            ];
+        }
+        else{
+            return [
+                'error' => true,
+                'message' => 'this game does not exist'
+            ];
+        }
+    }
 }
