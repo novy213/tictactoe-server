@@ -299,7 +299,7 @@ class SiteController extends Controller
         $user = Yii::$app->user->identity;
         $game = Game::find()->andWhere(['host_id'=>$user->id])->orWhere(['enemy_id'=>$user->id])->one();
         if($game!=null) $win = $game->Win();
-        if(!$win['error']){
+        if((isset($win)) && !$win['error']){
             return $win;
         }
         $moves = $game->moves;
