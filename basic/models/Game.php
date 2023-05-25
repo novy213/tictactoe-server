@@ -118,6 +118,7 @@ class Game extends \yii\db\ActiveRecord
         $moves = array();
         $move = Move::find()->andWhere(['game_id'=>$this->id])->all();
         $char = "X";
+        for($i=0;$i<9;$i++) $move[$i]="";
         for($i=0;$i<count($move);$i++){
             switch ($move[$i]->move){
                 case "a1":
