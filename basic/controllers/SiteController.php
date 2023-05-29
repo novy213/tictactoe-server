@@ -300,6 +300,7 @@ class SiteController extends Controller
         $game = Game::find()->andWhere(['host_id'=>$user->id])->orWhere(['enemy_id'=>$user->id])->one();
         $win = $game->Win();
         if(!$win['error']){
+            $game->delete();
             return $win;
         }
         if(!$game){
