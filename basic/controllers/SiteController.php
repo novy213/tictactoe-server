@@ -298,9 +298,11 @@ class SiteController extends Controller
     public function actionRecivemoves(){
         $user = Yii::$app->user->identity;
         $game = Game::find()->andWhere(['host_id'=>$user->id])->orWhere(['enemy_id'=>$user->id])->one();
-        $win = $game->Win();
-        if(!$win['error']){
-            return $win;
+        if($game) {
+            $win = $game->Win();
+            if (!$win['error']) {
+                return $win;
+            }
         }
         if(!$game){
             return [
