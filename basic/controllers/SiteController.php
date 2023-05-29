@@ -306,6 +306,7 @@ class SiteController extends Controller
         }
         $win = $game->Win();
         if(!$win['error']){
+            $game->delete();
             return $win;
         }
         if(!$game){
