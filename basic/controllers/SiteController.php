@@ -308,11 +308,6 @@ class SiteController extends Controller
             return [
                 'error' => true,
                 'message' => 'this game does not exist'
-            ];}
-        if(!$game){
-            return [
-                'error' => true,
-                'message' => 'this game does not exist'
             ];
         }
         $moves = $game->moves;
