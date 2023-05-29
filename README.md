@@ -223,34 +223,3 @@ GET /chat/message/{user_from}
   ]
 }
 ```
-## 3.2 Recive conversation messages
-```
-GET /chat/conversation/{user_id}
-```
-### Params:
-```
-user_id - unique id of selected user that we are chatting with
-```
-### Body:
-```
-(null)
-```
-### Response: 
-```
-{
-  "error": false,
-  "message": null,
-  "message":[
-    {
-      "id": 1,
-      "message": "testowa wiadomosc",
-      "from": "adam"
-    },
-    {
-      "id": 2,
-      "message": "testowa wiadomosc 2",
-      "from": "jan"
-    }
-  ]
-}
-```
